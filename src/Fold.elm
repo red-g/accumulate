@@ -3,6 +3,7 @@ module Fold exposing
     , wrap, custom, merge
     , list, string
     , arrayLeft, arrayRight, listLeft, listRight, maybe, result, resultError, stringLeft, stringRight
+    , failed, passed
     )
 
 {-| Simple, extensible `Fold`s.
@@ -30,6 +31,7 @@ module Fold exposing
 -}
 
 import Array exposing (Array)
+import Filter exposing (Filter)
 
 
 {-| Uses an input `a` to accumulate over `b`.
@@ -124,6 +126,40 @@ resultError_ folder acc resultValue =
 
         Err error ->
             folder acc error
+
+
+{-| Apply a fold only if the filter passes.
+-}
+passed : Filter a -> Fold a b -> Fold a b
+passed filter fold =
+    custom <| passed_ filter <| merge fold
+
+
+passed_ : Filter a -> Internals a b -> Internals a b
+passed_ filter folder acc value =
+    case Filter.test filter value of
+        Filter.Pass ->
+            folder acc value
+
+        Filter.Fail ->
+            acc
+
+
+{-| Apply a fold only if the filter fails.
+-}
+failed : Filter a -> Fold a b -> Fold a b
+failed filter fold =
+    custom <| failed_ filter <| merge fold
+
+
+failed_ : Filter a -> Internals a b -> Internals a b
+failed_ filter folder acc value =
+    case Filter.test filter value of
+        Filter.Pass ->
+            folder acc value
+
+        Filter.Fail ->
+            acc
 
 
 {-| Starting from the left, fold each element of the list onto `b`.
