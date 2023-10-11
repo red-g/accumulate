@@ -2,8 +2,7 @@ module Fold exposing
     ( Fold
     , wrap, custom, merge
     , list, string
-    , arrayLeft, arrayRight, listLeft, listRight, maybe, result, resultError, stringLeft, stringRight
-    , failed, passed
+    , arrayLeft, arrayRight, listLeft, listRight, maybe, result, resultError, stringLeft, stringRight, passed, failed
     )
 
 {-| Simple, extensible `Fold`s.
@@ -26,7 +25,7 @@ module Fold exposing
 
 # Composite Folds
 
-@docs arrayLeft, arrayRight, listLeft, listRight, maybe, result, resultError, stringLeft, stringRight
+@docs arrayLeft, arrayRight, listLeft, listRight, maybe, result, resultError, stringLeft, stringRight, passed, failed
 
 -}
 
@@ -155,10 +154,10 @@ failed filter fold =
 failed_ : Filter a -> Internals a b -> Internals a b
 failed_ filter folder acc value =
     case Filter.test filter value of
-        Filter.Pass ->
+        Filter.Fail ->
             folder acc value
 
-        Filter.Fail ->
+        Filter.Pass ->
             acc
 
 
