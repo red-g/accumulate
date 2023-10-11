@@ -1,7 +1,7 @@
 module Split exposing
     ( Splitter
-    , arrayEnd, arrayStart, listHead, stringHead
     , custom, take
+    , arrayEnd, arrayStart, listHead, stringHead
     )
 
 {-| Extract elements from collections.
@@ -14,7 +14,7 @@ module Split exposing
 
 # Manipulations
 
-@docs custom take
+@docs custom, take
 
 
 # Primitives
