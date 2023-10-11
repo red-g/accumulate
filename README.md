@@ -11,9 +11,10 @@ Accumulate provides the `Fold`, `Reduce`, and `Split` abstractions.
   * Examples: `String.uncons`, `head :: tail`
   * This is mostly useful in the context of reducing over a collection
 
-# extension
+## extension
 `Fold`, `Reduce`, and `Split` are already defined for built-in types, but you can easily extend them to your types with the `custom` function.
-# examples
+
+## examples
 Cons to a list if the element exists:
 ```elm
 maybeCons =
