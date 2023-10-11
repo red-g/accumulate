@@ -27,7 +27,9 @@ import Array exposing (Array)
 
 
 {-| Tries to split an element `a` off of `b`.
--} type Splitter a b = Splitter (b -> Maybe ( a, b ))
+-}
+type Splitter a b
+    = Splitter (b -> Maybe ( a, b ))
 
 
 {-| Try to split an item off a collection, applying the given function on success.
@@ -63,7 +65,8 @@ arrayStart_ a =
     Maybe.map (\t -> ( t, Array.slice 0 -1 a )) <| Array.get 0 a
 
 
-{-| Split off the end of an array. -}
+{-| Split off the end of an array.
+-}
 arrayEnd : Splitter a (Array a)
 arrayEnd =
     custom arrayEnd_
@@ -74,7 +77,8 @@ arrayEnd_ a =
     Maybe.map (\h -> ( h, Array.slice 1 (Array.length a) a )) <| Array.get 0 a
 
 
-{-| Split off the head of a string. -}
+{-| Split off the head of a string.
+-}
 stringHead : Splitter Char String
 stringHead =
     custom String.uncons
