@@ -10,6 +10,7 @@ Accumulate provides the `Fold`, `Reduce`, and `Split` abstractions.
   * Extract an item from a collection, if it exists
   * Examples: `String.uncons`, `head :: tail`
   * This is mostly useful in the context of reducing over a collection
+
 # extension
 `Fold`, `Reduce`, and `Split` are already defined for built-in types, but you can easily extend them to your types with the `custom` function.
 # examples
