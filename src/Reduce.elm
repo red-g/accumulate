@@ -1,8 +1,8 @@
 module Reduce exposing
     ( Reduce
     , custom, combine, flip, collect, wrap
-    , fAdd, fDiv, fMul, fPow, fSub, iAdd, iDiv, iMul, iPow, iSub, array, list, max, min, string, or, and
-    , arrayLeft, arrayRight, stringLeft, listLeft, maybe, result
+    , fAdd, fDiv, fMul, fPow, fSub, iAdd, iDiv, iMul, iPow, iSub, array, list, max, min, string, or, and, sorter
+    , arrayLeft, arrayRight, stringLeft, listLeft, maybe, result, resultError
     )
 
 {-| Simple, extensible reducers.
@@ -20,12 +20,12 @@ module Reduce exposing
 
 # Primitive Reducers
 
-@docs fAdd, fDiv, fMul, fPow, fSub, iAdd, iDiv, iMul, iPow, iSub, array, list, max, min, string, or, and
+@docs fAdd, fDiv, fMul, fPow, fSub, iAdd, iDiv, iMul, iPow, iSub, array, list, max, min, string, or, and, sorter
 
 
 # Composite Reducers
 
-@docs arrayLeft, arrayRight, stringLeft, listLeft, maybe, result
+@docs arrayLeft, arrayRight, stringLeft, listLeft, maybe, result, resultError
 
 -}
 
@@ -36,7 +36,7 @@ import Sort exposing (Sorter)
 import Split exposing (Splitter)
 
 
-{-| Combines 2 of the same thing. Equivalent to a `Fold` where the accumulator and input share the same type.
+{-| Combines two of the same thing. Equivalent to a `Fold` where the accumulator and input share the same type.
 -}
 type alias Reduce a =
     Fold a a
@@ -138,6 +138,22 @@ or =
 and : Reduce (Filter a)
 and =
     custom Filter.and
+
+
+
+-- this conflicts with the way reductions typically work, with the "target" on the left
+
+
+{-| Sort by both the left and right filter, deferring to the left.
+-}
+sorter : Reduce (Sorter a)
+sorter =
+    custom sorter_
+
+
+sorter_ : Internals (Sorter a)
+sorter_ leftv rightv =
+    Sort.and rightv leftv
 
 
 {-| Put the left integer to the power of the right integer.
@@ -303,13 +319,13 @@ resultError err ok =
 {-| Keep the larger input, according to the given sorter.
 -}
 max : Sorter k -> Reduce k
-max sorter =
-    custom <| max_ sorter
+max =
+    custom << max_
 
 
 max_ : Sorter k -> Internals k
-max_ sorter leftv rightv =
-    case Sort.order sorter leftv rightv of
+max_ s leftv rightv =
+    case Sort.order s leftv rightv of
         LT ->
             rightv
 
@@ -320,13 +336,13 @@ max_ sorter leftv rightv =
 {-| Keep the smaller input, according to the given sorter.
 -}
 min : Sorter k -> Reduce k
-min sorter =
-    custom <| min_ sorter
+min =
+    custom << min_
 
 
 min_ : Sorter k -> Internals k
-min_ sorter leftv rightv =
-    case Sort.order sorter leftv rightv of
+min_ s leftv rightv =
+    case Sort.order s leftv rightv of
         GT ->
             rightv
 
